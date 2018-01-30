@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: stokwell
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: pinger_development
+
+test:
+  <<: *default
+  database: pinger_test
+
+production:
+  <<: *default
+  database: pinger_production
+  username: pinger
+  password: <%= ENV['PINGER_DATABASE_PASSWORD'] %>
