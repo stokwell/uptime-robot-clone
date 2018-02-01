@@ -1,0 +1,7 @@
+=render "shared/header"
+
+=render partial: "sites/form", locals: {site: @site}
+
+- @sites.each do |site|
+  .
+    | #{site.title} #{site.url} 

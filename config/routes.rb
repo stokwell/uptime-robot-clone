@@ -4,7 +4,9 @@ Rails.application.routes.draw do
 
   get '/dashboard', to: 'pages#dashboard'
 
-  constraints Clearance::Constraints::SignedIn.new do
-    root to: 'pages#dashboard', as: :signed_in_root
-  end
+  resource :sites
+
+  resource  :session,
+    :controller => 'sessions',
+    :only => [:new, :create, :destroy]
 end

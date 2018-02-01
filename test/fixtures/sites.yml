@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  url: MyString
+  frequency: 1
+  enabled: false
+  up: false
+  user: one
+
+two:
+  title: MyString
+  url: MyString
+  frequency: 1
+  enabled: false
+  up: false
+  user: two
