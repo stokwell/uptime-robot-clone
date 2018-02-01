@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  startet_add: 
+  success: 
+  status_code: 
+  site: one
+
+two:
+  startet_add: 
+  success: 
+  status_code: 
+  site: two
