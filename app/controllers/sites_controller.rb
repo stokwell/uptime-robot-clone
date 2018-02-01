@@ -8,8 +8,8 @@ class SitesController < ApplicationController
   def start_monitoring()
   end
 
-  def 
-
+  def minutes_to_seconds
+  end
 
   private
 
