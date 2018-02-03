@@ -1,7 +1,29 @@
 =render "shared/header"
 
-=render partial: "sites/form", locals: {site: @site}
+section class="sites-list"
+  .container
+    table class="table"
+      thead
+        tr
+          th Title
+          th URL
+          th Frequency
+          th Status
+          th Enabled
+          th
+      tbody
+        - @sites.each do |site|
+          tr
+            th =site.title
+            th =site.url
+            th =site.frequency
+            th =site.up
+            th =site.enabled
+            th class="buttons"
+              = link_to 'Destroy', sites_path(site), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+              = link_to 'Start', start_monitoring_path(site), remote: true
+              = link_to 'Stop', stop_monitoring_path(site), remote: true
 
-- @sites.each do |site|
-  .
-    | #{site.title} #{site.url} #{site.frequency} #{site.enabled} #{site.up}
+
+.container
+  =render partial: "sites/form", locals: {site: @site}
