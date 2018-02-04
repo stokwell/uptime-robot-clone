@@ -1,12 +1,17 @@
-= form_for @site, url: sites_path(@site), method: :post, remote: true  do |f|
-  = f.label :title
-  = f.text_field :title
-
-  = f.label :url
-  = f.text_field :url
-
-  = f.label :frequency
-  = f.text_field :frequency
 
 
-  = f.submit
+= form_for @site, url: sites_path(@site), method: :post, remote: true do |f|
+  .form-group
+    = f.label :title
+    = f.text_field :title, class: "form-control"
+
+  .form-group
+    = f.label :url
+    = f.text_field :url, class: "form-control"
+
+  .form-group
+    = f.label :frequency
+    = f.text_field :frequency, class: "form-control"
+
+  .form-group
+    = f.submit

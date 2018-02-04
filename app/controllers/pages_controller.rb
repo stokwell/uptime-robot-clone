@@ -4,7 +4,7 @@ class PagesController < ApplicationController
   end
 
   def dashboard
-    @sites = Site.by_user(current_user)
+    @sites = Site.by_user(current_user).order('id ASC')
     @site = Site.new
     render :dashboard
   end
