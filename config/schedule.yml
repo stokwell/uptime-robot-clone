@@ -1,0 +1,4 @@
+find_site_to_request:
+  cron: "*/1 * * * *"
+  class: "FindSiteToRequestWorker"
+  queue: default

@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
@@ -6,12 +7,10 @@ Rails.application.routes.draw do
 
   get '/dashboard', to: 'pages#dashboard'
 
-  get 'sites/start_monitoring', to: 'sites#start_monitoring', as: :start_monitoring
-  get 'sites/stop_monitoring', to: 'sites#stop_monitoring', as: :stop_monitoring 
-
   resource :sites do
     collection do
-      get 'start_monitoring'
+      get 'enable_monitoring'
+      get 'disable_monitoring'
     end
   end
 
