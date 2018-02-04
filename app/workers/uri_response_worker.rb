@@ -1,45 +1,39 @@
-require 'timeout'
-
 class UriResponseWorker
   include Sidekiq::Worker
+  include Typhoeus
 
   def perform(site_id)
-      if site = Site.find_by(id: site_id)
-      uri = URI.parse(site.url)
-      frequency = site.frequency
-      begin
-        response_code = Timeout::timeout(5) { Net::HTTP.get_response(uri).code }
-        logger.info "Response: #{site_id} - #{response_code} - #{site.url}"
-        case response_code&.chars&.first
-        when '2'
-          good_response(site, response_code)
-        when '3'
-          good_response(site, response_code)
-        else
-          bad_response(site, response_code)
-        end
-      rescue Timeout::Error
-        bad_response(site, 'Timeout')
-      rescue Errno::ECONNREFUSED
-        bad_response(site, 'Connection Refused')
+    @site = Site.find_by(id: site_id)
+    request = Typhoeus::Request.new(@site.url, timeout: 5)
+
+    #The callbacks should be defined before running the request.
+    request.on_complete do |response|
+      if response.success?
+        logger.info("HTTP request successed: " + response.code.to_s)
+        good_response
+      elsif response.timed_out?
+        logger.info("HTTP request got a time out")
+      elsif response.code == 0
+        # Could not get an http response, something's wrong.
+        logger.info(response.return_message)
+        bad_response
+      else
+        # Received a non-successful http response.
+        logger.info("HTTP request failed: " + response.code.to_s)
+        bad_response
       end
     end
+
+    #Request running
+    request.run
   end
 
-  def good_response(site, response_code)
-    unless site.up?
-      logger.info "Site was bad: #{site.id} - #{response_code} - #{site.url}"
-      site.update_attribute(:up, true)
-    end
-    UriResponseWorker.perform_in(site.frequency, site.id)
+  def good_response
+    @site.update_attribute(:up, true)
   end
 
-  def bad_response(site, response_code)
-    if site.up?
-      logger.info "Site was good: #{site.id} - #{response_code} - #{site.url}, but failed!!!"
-      site.update_attribute(:up, false)
-    else
-      logger.info "#{site.url} has responsed with '#{response_code}'."
-    end
+  def bad_response
+    @site.update_attribute(:up, false)
   end
+
 end
