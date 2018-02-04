@@ -21,8 +21,6 @@ gem 'turbolinks', '~> 5'
 
 gem 'jbuilder', '~> 2.5'
 
-gem 'sidekiq'
-
 gem 'slim'
 
 gem "clearance"
@@ -34,6 +32,8 @@ gem 'jquery-rails'
 gem 'sidekiq'
 
 gem 'sidekiq-cron'
+
+gem "typhoeus"
 
 
 group :development, :test do
