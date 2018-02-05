@@ -8,19 +8,23 @@ class UriResponseWorker
     #The callbacks should be defined before running the request.
     request.on_complete do |response|
       if response.success?
-        logger.info("HTTP request successed: " + response.code.to_s)
+        message = "HTTP request successed: " + response.code.to_s
+        logger.info(message)
         good_response
       elsif response.timed_out?
-        logger.info("HTTP request got a time out")
-        bad_response
+        message = "HTTP request got a time out"
+        logger.info(message)
+        bad_response(message)
       elsif response.code == 0
         # Could not get an http response, something's wrong.
-        logger.info(response.return_message)
-        bad_response
+        message = response.return_message
+        logger.info(message)
+        bad_response(message)
       else
         # Received a non-successful http response.
-        logger.info("HTTP request failed: " + response.code.to_s)
-        bad_response
+        message = "HTTP request failed: " + response.code.to_s
+        logger.info(message)
+        bad_response(message)
       end
     end
     #Request running
@@ -31,8 +35,8 @@ class UriResponseWorker
     @site.update(up: true) unless @site.up
   end
 
-  def bad_response
-    AlertsMailer.delay.bad_response_email(@site)
+  def bad_response(message)
+    AlertsMailer.delay.bad_response_email(@site, message)
     @site.update(up: false) if @site.up != false
   end
 end
