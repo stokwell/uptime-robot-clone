@@ -22,7 +22,7 @@ class SitesController < ApplicationController
 
   def disable_monitoring
     site = Site.find_by(id: params[:format])
-    site.update_attributes(enabled: false, up: nil)
+    site.update_attributes(enabled: false, up: false)
     redirect_to controller: 'pages', action: 'dashboard'
   end
 
@@ -31,5 +31,4 @@ class SitesController < ApplicationController
   def site_params
     params.require(:site).permit(:title, :url, :frequency, :up, :enabled)
   end
-
 end

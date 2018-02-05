@@ -9,6 +9,7 @@ class UriResponseWorker
     request.on_complete do |response|
       if response.success?
         message = "HTTP request successed: " + response.code.to_s
+        #puts response.total_time.round(3)
         logger.info(message)
         good_response
       elsif response.timed_out?
@@ -32,11 +33,13 @@ class UriResponseWorker
   end
 
   def good_response
+    @site.update(checked_at: Time.now.to_datetime)
     @site.update(up: true) unless @site.up
   end
 
   def bad_response(message)
-    AlertsMailer.delay.bad_response_email(@site, message)
+    @site.update(checked_at: Time.now.to_datetime)
     @site.update(up: false) if @site.up != false
+    AlertsMailer.delay.bad_response_email(@site, message)
   end
 end
