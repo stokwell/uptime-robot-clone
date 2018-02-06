@@ -2,7 +2,7 @@ class SitesController < ApplicationController
 
   def create
     site = Site.create(site_params.merge(user_id: current_user.id))
-    UriResponseWorker.perform_async(site.id)
+    UriRequestService.new(site).perform
     redirect_to controller: 'pages', action: 'dashboard'
   end
 
@@ -14,9 +14,8 @@ class SitesController < ApplicationController
 
   def enable_monitoring
     site = Site.find_by(id: params[:format])
-    UriResponseWorker.perform_async(site.id)
+    UriRequestService.new(site).perform
     site.update_attributes(enabled: true)
-
     redirect_to controller: 'pages', action: 'dashboard'
   end
 
