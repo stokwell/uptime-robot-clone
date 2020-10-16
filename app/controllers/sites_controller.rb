@@ -2,7 +2,7 @@ class SitesController < ApplicationController
 
   def create
     site = Site.create(site_params.merge(user_id: current_user.id))
-    UriResponseWorker.perform_async(site.id)
+    UriRequestService.new(site).perform
     redirect_to controller: 'pages', action: 'dashboard'
   end
 
@@ -14,15 +14,14 @@ class SitesController < ApplicationController
 
   def enable_monitoring
     site = Site.find_by(id: params[:format])
-    UriResponseWorker.perform_async(site.id)
+    UriRequestService.new(site).perform
     site.update_attributes(enabled: true)
-
     redirect_to controller: 'pages', action: 'dashboard'
   end
 
   def disable_monitoring
     site = Site.find_by(id: params[:format])
-    site.update_attributes(enabled: false, up: nil)
+    site.update_attributes(enabled: false, up: false)
     redirect_to controller: 'pages', action: 'dashboard'
   end
 
@@ -31,5 +30,4 @@ class SitesController < ApplicationController
   def site_params
     params.require(:site).permit(:title, :url, :frequency, :up, :enabled)
   end
-
 end
